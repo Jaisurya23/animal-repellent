@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Training Logs — Admin</title>
+  <style>
+    body{font-family:Inter,system-ui;background:#fff;padding:20px;color:#0f172a}
+    .card{max-width:900px;margin:0 auto;background:#f8fafc;padding:18px;border-radius:12px}
+    .log{background:white;padding:12px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.04)}
+    .log-line{font-family:monospace;padding:6px;border-bottom:1px solid #f1f5f9}
+    .small{color:#6b7280}
+    .btn{background:#0f766e;color:white;padding:8px 12px;border-radius:8px;text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Training Logs (Demo)</h2>
+    <p class="small">This view shows simulated logs. Click <strong>Refresh Logs</strong> to fetch dummy log entries.</p>
+
+    <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
+      <button id="refresh" class="btn">Refresh Logs</button>
+      <a href="/admin/dashboard">Back to Dashboard</a>
+    </div>
+
+    <div id="logs" class="log" style="margin-top:12px">
+      <!-- log lines will show here -->
+    </div>
+  </div>
+
+  <script>
+    const refresh = document.getElementById('refresh');
+    const logs = document.getElementById('logs');
+
+    async function loadLogs(){
+      logs.innerHTML = '<div class="small">Loading...</div>';
+      try{
+        const resp = await fetch('/admin/logs/data');
+        const data = await resp.json();
+        logs.innerHTML = '';
+        data.logs.forEach(l => {
+          const div = document.createElement('div');
+          div.className = 'log-line';
+          div.textContent = `[${l.time}] ${l.msg}`;
+          logs.appendChild(div);
+        });
+      }catch(e){
+        logs.innerHTML = '<div class="small">Failed to load logs.</div>';
+      }
+    }
+
+    refresh.addEventListener('click', loadLogs);
+    // load on open
+    loadLogs();
+  </script>
+</body>
+</html>

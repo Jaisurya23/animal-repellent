@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Upload Image</title>
+    <style>
+      body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f0fdf9;color:#0f172a}
+      header{display:flex;justify-content:space-between;align-items:center;padding:18px 28px;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+      .logo{font-weight:800;font-size:20px;color:#0f766e}
+      nav a{margin-left:16px;text-decoration:none;color:#6b7280;font-weight:600}
+      .container{max-width:600px;margin:24px auto;padding:0 20px}
+      .card{background:white;padding:22px;border-radius:14px;box-shadow:0 4px 14px rgba(0,0,0,0.08)}
+      h2{margin:0 0 20px;font-size:22px}
+      .upload-box{border:2px dashed #0f766e;border-radius:10px;padding:30px;text-align:center;margin:20px 0;background:#f0fdf9}
+      .upload-box input{display:none}
+      .upload-label{cursor:pointer;display:block;color:#0f766e;font-weight:600}
+      .upload-label:hover{text-decoration:underline}
+      .filename{margin-top:10px;font-size:14px;color:#6b7280}
+      .btn{display:inline-block;padding:10px 14px;background:#0f766e;color:white;text-decoration:none;border-radius:6px;margin-top:10px;border:none;cursor:pointer}
+      .message{padding:10px;border-radius:6px;margin-bottom:15px}
+      .message.error{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+      .message.success{background:#dcfce7;color:#166534;border:1px solid #86efac}
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">Upload Image</div>
+      <nav>
+        <a href="/user/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+
+    <div class="container">
+      <div class="card">
+        <h2>Upload Animal Detection Image</h2>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="message error">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+
+        <p style="color:#6b7280">Upload an image from your computer to identify the animal species. Supported formats: PNG, JPG, JPEG, GIF, BMP (Max 5MB)</p>
+
+        <form method="post" enctype="multipart/form-data">
+          <div class="upload-box">
+            <label class="upload-label" for="file-input">
+              📷 Click to select image or drag and drop
+            </label>
+            <input id="file-input" type="file" name="file" accept="image/*" required />
+            <div class="filename" id="filename-display"></div>
+          </div>
+
+          <div style="display:flex;gap:8px;justify-content:center">
+            <button type="submit" class="btn">Upload Image</button>
+            <a href="/user/dashboard" style="padding:10px 14px;background:#6b7280;color:white;text-decoration:none;border-radius:6px;display:inline-block">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const fileInput = document.getElementById('file-input');
+      const filenameDisplay = document.getElementById('filename-display');
+      const uploadBox = document.querySelector('.upload-box');
+
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          filenameDisplay.textContent = '✓ ' + e.target.files[0].name;
+        }
+      });
+
+      // Drag and drop
+      uploadBox.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadBox.style.background = '#e0f2fe';
+      });
+
+      uploadBox.addEventListener('dragleave', () => {
+        uploadBox.style.background = '#f0fdf9';
+      });
+
+      uploadBox.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadBox.style.background = '#f0fdf9';
+        if (e.dataTransfer.files.length > 0) {
+          fileInput.files = e.dataTransfer.files;
+          filenameDisplay.textContent = '✓ ' + e.dataTransfer.files[0].name;
+        }
+      });
+    </script>
+  </body>
+</html>

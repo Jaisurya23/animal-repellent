@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Upload Dataset — Admin</title>
+  <style>
+    body{font-family:Inter, system-ui;background:#f8fafc;color:#0f172a;margin:0;padding:20px}
+    .container{max-width:900px;margin:0 auto}
+    .card{background:white;padding:18px;border-radius:12px;box-shadow:0 6px 20px rgba(15,23,42,0.05)}
+    h2{margin:0 0 12px}
+    form{display:flex;gap:10px;align-items:center}
+    input[type=file]{padding:6px}
+    input[type=text]{padding:8px;border-radius:8px;border:1px solid #e6e9ee}
+    .btn{background:#0f766e;color:white;padding:8px 12px;border-radius:8px;text-decoration:none}
+    .list{margin-top:16px}
+    .folder{padding:10px;border-radius:8px;background:#f3f4f6;margin-bottom:8px;display:flex;justify-content:space-between}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h2>Upload Dataset</h2>
+      <p>Upload a ZIP (containing folders/files) or single images. ZIPs will be extracted into the `dataset/` folder.</p>
+      <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <input type="text" name="category" placeholder="Optional category (for single images)" />
+        <button class="btn" type="submit">Upload</button>
+      </form>
+
+      <div class="list">
+        <h3>Existing dataset folders</h3>
+        {% if folders %}
+          {% for f in folders %}
+            <div class="folder"><span>{{ f.name }}</span><span>{{ f.count }} images</span></div>
+          {% endfor %}
+        {% else %}
+          <div class="small">No dataset folders found.</div>
+        {% endif %}
+      </div>
+
+      <div style="margin-top:14px">
+        <a href="/admin/dashboard">Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

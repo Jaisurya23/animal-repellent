@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>User Register</title>
+    <style>
+      body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f4f6;color:#0f172a}
+      .card{max-width:520px;margin:8vh auto;padding:18px;background:#fff;border:1px solid #e6e7ea;border-radius:8px;text-align:center}
+      input{width:100%;padding:10px;margin:8px 0;border:1px solid #d1d5db;border-radius:6px}
+      button{padding:10px 14px;border-radius:6px;border:none;background:#0f766e;color:#fff;cursor:pointer}
+      .message{color:#b91c1c;margin-bottom:8px}
+      a.small{display:inline-block;margin-top:10px;color:#374151;text-decoration:none;font-size:13px}
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2>Create an account</h2>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="message">{{ messages[0] }}</div>
+        {% endif %}
+      {% endwith %}
+
+      <form method="post" action="/user/register">
+        <input name="name" type="text" placeholder="Full name" required autofocus />
+        <input name="email" type="email" placeholder="Email" required />
+        <input name="password" type="password" placeholder="Password" required />
+        <input name="location" type="text" placeholder="Farm location (optional)" />
+        <div style="display:flex;gap:8px;justify-content:center;margin-top:10px">
+          <button type="submit">Create account</button>
+        </div>
+      </form>
+
+      <div style="margin-top:10px">
+        <a class="small" href="/user/login">Already have an account? Sign in</a> · <a class="small" href="/">Home</a>
+      </div>
+    </div>
+  </body>
+</html>

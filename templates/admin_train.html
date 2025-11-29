@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Train Model — Admin</title>
+  <style>
+    body{font-family:Inter,system-ui;background:#f8fafc;padding:20px;color:#0f172a}
+    .card{max-width:900px;margin:0 auto;background:white;padding:18px;border-radius:12px;box-shadow:0 6px 20px rgba(15,23,42,0.05)}
+    .btn{background:#0f766e;color:white;padding:10px 12px;border-radius:8px;text-decoration:none;border:none;cursor:pointer}
+    .progress{height:18px;background:#e6f6f1;border-radius:9px;overflow:hidden;margin-top:12px}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#10b981,#059669);width:0%;transition:width 0.4s ease}
+    .small{color:#6b7280;font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Train CNN Model (Demo)</h2>
+    <p class="small">This is a simulated training interface. Click <strong>Start Training</strong> to see a fake progress bar and logs.</p>
+
+    <div style="display:flex;gap:12px;align-items:center">
+      <button id="startBtn" class="btn">Start Training</button>
+      <span id="status" class="small">Idle</span>
+    </div>
+
+    <div class="progress" aria-hidden>
+      <div id="fill" class="progress-fill"></div>
+    </div>
+
+    <div style="margin-top:14px">
+      <h3>Metrics (simulated)</h3>
+      <div class="small">Epochs: 5 | Batch size: 16 | Optimizer: Adam</div>
+      <ul id="metrics" class="small"></ul>
+    </div>
+
+    <div style="margin-top:14px">
+      <a href="/admin/dashboard">Back to Dashboard</a>
+    </div>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const status = document.getElementById('status');
+    const fill = document.getElementById('fill');
+    const metrics = document.getElementById('metrics');
+
+    startBtn.addEventListener('click', async () => {
+      startBtn.disabled = true;
+      status.textContent = 'Starting...';
+      // call backend to 'start' training (dummy)
+      try{
+        const resp = await fetch('/admin/start_training', {method: 'POST'});
+        if (!resp.ok) throw new Error('Not authorized');
+      }catch(e){
+        alert('Failed to start training: '+e.message);
+        startBtn.disabled = false;
+        return;
+      }
+
+      status.textContent = 'Training...';
+      metrics.innerHTML = '';
+      fill.style.width = '0%';
+
+      // simulate progress over ~20s
+      const steps = [10, 30, 50, 70, 90, 100];
+      const logLines = [
+        'Initializing model...',
+        'Loading dataset...',
+        'Epoch 1/5 - loss: 1.42 - acc: 0.45',
+        'Epoch 2/5 - loss: 1.12 - acc: 0.56',
+        'Epoch 3/5 - loss: 0.99 - acc: 0.62',
+        'Training complete. Best val_acc: 0.742'
+      ];
+
+      for (let i=0;i<steps.length;i++){
+        await new Promise(res => setTimeout(res, 3000));
+        fill.style.width = steps[i]+'%';
+        const li = document.createElement('li'); li.textContent = logLines[i]; metrics.appendChild(li);
+      }
+
+      status.textContent = 'Completed';
+      startBtn.disabled = false;
+    });
+  </script>
+</body>
+</html>

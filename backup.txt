@@ -1,0 +1,101 @@
+detection:
+
+from ultralytics import YOLO
+import cv2
+import signal
+import sys
+
+# Global flag to handle graceful shutdown
+should_exit = False
+
+
+def signal_handler(sig, frame):
+    """Handle Ctrl+C gracefully."""
+    global should_exit
+    should_exit = True
+    print("Detection stopped by user.")
+    sys.exit(0)
+
+
+# Register signal handler
+signal.signal(signal.SIGINT, signal_handler)
+
+# Load YOLO model
+print("Loading YOLO model...")
+model = YOLO("yolov8n.pt")
+print("YOLO model loaded successfully.")
+
+# Open webcam
+print("Opening camera...")
+cap = cv2.VideoCapture(0)
+
+if not cap.isOpened():
+    print("Error: Could not open camera.")
+    sys.exit(1)
+
+print("Camera opened. Running YOLO detection...")
+print("Press Ctrl+C to stop detection.")
+
+# Detection loop
+frame_count = 0
+try:
+    while not should_exit:
+        ret, frame = cap.read()
+        if not ret:
+            print("Error: Failed to read frame from camera.")
+            break
+
+        frame_count += 1
+
+        # Resize frame to smaller size for faster processing
+        frame = cv2.resize(frame, (320, 240))
+
+        # Run YOLO on the frame
+        results = model(frame)
+
+        # Draw detection results for all objects
+        for r in results:
+            for box in r.boxes:
+                try:
+                    cls = int(box.cls[0])  # class id
+                    label = model.names[cls]  # class name
+
+                    # box coordinates
+                    x1, y1, x2, y2 = box.xyxy[0]
+                    x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+
+                    # draw box
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+
+                    # label text with confidence
+                    confidence = float(box.conf[0]) if hasattr(box, 'conf') else 0
+                    text = f"{label} {confidence:.2f}"
+                    cv2.putText(
+                        frame, text,
+                        (x1, y1 - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8,
+                        (0, 255, 0), 2
+                    )
+                except Exception as e:
+                    print(f"Error processing detection: {e}")
+                    continue
+
+        # Display the frame
+        cv2.imshow("YOLO Live Detection - Animal Repellent", frame)
+
+        # Print detection count every 30 frames
+        if frame_count % 30 == 0:
+            print(f"Processed {frame_count} frames...")
+
+        # Press 'q' to quit (this won't work in subprocess, use Ctrl+C)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+except KeyboardInterrupt:
+    print("Detection interrupted.")
+except Exception as e:
+    print(f"Error during detection: {e}")
+finally:
+    cap.release()
+    cv2.destroyAllWindows()
+    print(f"Detection stopped. Total frames processed: {frame_count}")

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Detection History</title>
+    <style>
+      body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f0fdf9;color:#0f172a}
+      header{display:flex;justify-content:space-between;align-items:center;padding:18px 28px;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+      .logo{font-weight:800;font-size:20px;color:#0f766e}
+      nav a{margin-left:16px;text-decoration:none;color:#6b7280;font-weight:600}
+      .container{max-width:900px;margin:24px auto;padding:0 20px}
+      .card{background:white;padding:22px;border-radius:14px;box-shadow:0 4px 14px rgba(0,0,0,0.08)}
+      h2{margin:0 0 20px;font-size:22px}
+      table{width:100%;border-collapse:collapse}
+      th{text-align:left;padding:10px;border-bottom:2px solid #e6e7ea;font-weight:600}
+      td{padding:10px;border-bottom:1px solid #e6e7ea}
+      tr:hover{background:#f9fafb}
+      .empty{color:#6b7280;font-style:italic}
+      .btn{display:inline-block;padding:10px 14px;background:#0f766e;color:white;text-decoration:none;border-radius:6px;margin-top:10px}
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">Detection History</div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/user/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+
+    <div class="container">
+      <div class="card">
+        <h2>Detection History</h2>
+
+        {% if detections %}
+          <table>
+            <thead>
+              <tr>
+                <th>Animal Type</th>
+                <th>Location</th>
+                <th>Time Detected</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for detection in detections %}
+                <tr>
+                  <td><strong>{{ detection['animal_type'] }}</strong></td>
+                  <td>{{ detection['location'] or 'Unknown' }}</td>
+                  <td>{{ detection['timestamp'] }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="empty">No detections recorded yet.</p>
+        {% endif %}
+
+        <a class="btn" href="/user/dashboard">Back to Dashboard</a>
+      </div>
+    </div>
+  </body>
+</html>

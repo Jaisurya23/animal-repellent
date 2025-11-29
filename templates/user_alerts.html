@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Alerts</title>
+    <style>
+      body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f0fdf9;color:#0f172a}
+      header{display:flex;justify-content:space-between;align-items:center;padding:18px 28px;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+      .logo{font-weight:800;font-size:20px;color:#0f766e}
+      nav a{margin-left:16px;text-decoration:none;color:#6b7280;font-weight:600}
+      .container{max-width:900px;margin:24px auto;padding:0 20px}
+      .card{background:white;padding:22px;border-radius:14px;box-shadow:0 4px 14px rgba(0,0,0,0.08)}
+      h2{margin:0 0 20px;font-size:22px}
+      .alert-item{padding:12px;margin-bottom:12px;border-radius:8px;border-left:4px solid #ef4444}
+      .alert-item.warning{border-left-color:#f59e0b;background:#fef3c7}
+      .alert-item.danger{border-left-color:#ef4444;background:#fee2e2}
+      .alert-time{font-size:12px;color:#6b7280;margin-top:6px}
+      .empty{color:#6b7280;font-style:italic}
+      .btn{display:inline-block;padding:10px 14px;background:#0f766e;color:white;text-decoration:none;border-radius:6px;margin-top:10px}
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">Alerts</div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/user/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+
+    <div class="container">
+      <div class="card">
+        <h2>Alerts</h2>
+
+        {% if alerts %}
+          {% for alert in alerts %}
+            <div class="alert-item {% if alert['alert_type'] == 'danger' %}danger{% else %}warning{% endif %}">
+              <strong>{{ alert['message'] }}</strong>
+              <div class="alert-time">{{ alert['timestamp'] }}</div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="empty">No alerts at this time.</p>
+        {% endif %}
+
+        <a class="btn" href="/user/dashboard">Back to Dashboard</a>
+      </div>
+    </div>
+  </body>
+</html>

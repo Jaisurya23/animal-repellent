@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard — Animal Repellent System</title>
+  <style>
+    :root{
+      --accent:#7c3aed;
+      --muted:#6b7280;
+      --bg:#faf5ff;
+      font-family:Inter, system-ui;
+    }
+    body{margin:0;background:var(--bg);color:#111827;}
+    header{display:flex;justify-content:space-between;align-items:center;padding:18px 28px;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+    .logo{font-weight:800;font-size:20px;color:var(--accent);}
+    nav a{margin-left:16px;text-decoration:none;color:var(--muted);font-weight:600;}
+    .container{max-width:1100px;margin:24px auto;padding:0 20px;}
+    .card{background:white;padding:22px;border-radius:14px;box-shadow:0 4px 14px rgba(0,0,0,0.08);margin-bottom:20px;}
+    h2{margin:0 0 12px;font-size:22px;}
+    h3{margin:0 0 10px;font-size:20px;}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
+    .btn{background:var(--accent);color:white;padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:600;display:inline-block;margin-top:10px;}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Admin Dashboard</div>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/admin/upload_dataset">Dataset</a>
+    <a href="/admin/train">Model Training</a>
+    <a href="/admin/logout">Logout</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Welcome, Admin!</h2>
+    <p>You have full control over model training, dataset uploads, and monitoring system activity.</p>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>📂 Upload Dataset</h3>
+      <p>Upload images for each animal category.</p>
+      <a class="btn" href="/admin/upload_dataset">Upload</a>
+    </div>
+
+    <div class="card">
+      <h3>🤖 Train CNN Model</h3>
+      <p>Train the detection model using uploaded dataset.</p>
+      <a class="btn" href="/admin/train">Train Model</a>
+    </div>
+
+    <div class="card">
+      <h3>📜 Training Logs</h3>
+      <p>Check model accuracy, loss and training history.</p>
+      <a class="btn" href="/admin/logs">View Logs</a>
+    </div>
+
+    <div class="card">
+      <h3>👥 User Details</h3>
+      <p>View all registered users and activity.</p>
+      <a class="btn" href="/admin/users">View Users</a>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
