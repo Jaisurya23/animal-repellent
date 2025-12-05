@@ -15,7 +15,7 @@ EMAIL_CONFIG = {
     'smtp_port': 587,
     'sender_email': 'your_gmail@gmail.com',  # Your Gmail address
     'sender_password': 'yourpassword',   # Your Gmail app password (16 characters)
-    'recipient_email': 'jaisurya230904@gmail.com'  # Email to receive alerts
+    'recipient_email': 'receiver email@gmail.com'  # Email to receive alerts
 }
 
 # For other email providers:
