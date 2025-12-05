@@ -11,6 +11,23 @@ import os
 from database import add_detection, add_alert
 import threading
 import time
+import subprocess
+
+# Sound effect mapping for animals
+ANIMAL_SOUNDS = {
+    'cat': 'sound/cat.mp3',
+    'cow': 'sound/cow.mp3',
+    'lion': 'sound/lion.mp3'
+}
+
+
+def load_sound_file(animal_type):
+    """Load a sound file for the given animal type. Returns file path if exists, None otherwise."""
+    sound_file = ANIMAL_SOUNDS.get(animal_type.lower())
+    if sound_file and os.path.exists(sound_file):
+        return sound_file
+    return None
+
 
 # Import configuration
 try:
@@ -152,11 +169,37 @@ def send_email_alert(animal_type, confidence, image_path=None):
         return False
 
 
-def play_sound_alert():
-    """Play sound alert."""
+def play_sound_alert(animal_type=None):
+    """Play sound alert. If animal_type is provided, try to play the corresponding sound file.
+    Otherwise fall back to beep."""
     if not SOUND_CONFIG.get('enabled', True):
         return
     
+    # Try to play animal-specific sound if provided
+    if animal_type:
+        sound_file = load_sound_file(animal_type)
+        if sound_file:
+            try:
+                # Try to play sound using Windows Media Player or ffplay
+                try:
+                    # Windows: use Windows Media Player
+                    subprocess.Popen(['powershell', '-Command', f'(New-Object Media.SoundPlayer "{sound_file}").PlaySync()'],
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    print(f"🔊 Playing sound alert for {animal_type}: {sound_file}")
+                    return
+                except Exception:
+                    # Try ffplay if available
+                    try:
+                        subprocess.run(['ffplay', '-nodisp', '-autoexit', sound_file],
+                                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=5)
+                        print(f"🔊 Playing sound alert for {animal_type}: {sound_file}")
+                        return
+                    except Exception:
+                        print(f"⚠️  Could not play {sound_file}, falling back to beep")
+            except Exception as e:
+                print(f"⚠️  Error playing sound: {e}")
+    
+    # Fall back to beep
     try:
         import winsound
         for _ in range(SOUND_CONFIG.get('beep_count', 3)):
@@ -165,7 +208,7 @@ def play_sound_alert():
                 SOUND_CONFIG.get('beep_duration', 500)
             )
             time.sleep(0.2)
-        print("🔊 Sound alert played")
+        print("🔊 Sound alert played (beep)")
     except ImportError:
         # winsound is Windows-only
         print("⚠️  Sound alert not available on this platform")
@@ -316,7 +359,7 @@ def main():
                                 image_path = save_detection_image(frame, label)
                                 
                                 # Play sound (non-blocking)
-                                threading.Thread(target=play_sound_alert, daemon=True).start()
+                                threading.Thread(target=play_sound_alert, args=(label,), daemon=True).start()
                                 
                                 # Send email (non-blocking)
                                 threading.Thread(
