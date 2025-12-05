@@ -13,8 +13,8 @@ EMAIL_CONFIG = {
     'enabled': True,  # Set to False to disable email alerts
     'smtp_server': 'smtp.gmail.com',
     'smtp_port': 587,
-    'sender_email': 'jaisuryafirerockers@gmail.com',  # Your Gmail address
-    'sender_password': 'dpzsquoolmljfsbx',   # Your Gmail app password (16 characters)
+    'sender_email': 'your_gmail@gmail.com',  # Your Gmail address
+    'sender_password': '####',   # Your Gmail app password (16 characters)
     'recipient_email': 'jaisurya230904@gmail.com'  # Email to receive alerts
 }
 
